@@ -12,11 +12,11 @@ export const color = createGlobalTheme(':root', {
   },
 
   primary: {
-    surface: palette.blue[95],
-    soft: palette.blue[70],
-    normal: palette.blue[60],
-    strong: palette.blue[50],
-    text: palette.blue[20],
+    surface: palette.coolNeutral[96],
+    soft: palette.coolNeutral[70],
+    normal: palette.coolNeutral[20],
+    strong: palette.coolNeutral[10],
+    text: palette.common[100],
   },
 
   accent: {
@@ -89,7 +89,7 @@ export const color = createGlobalTheme(':root', {
   },
 
   inverse: {
-    primary: palette.blue[60],
+    primary: palette.coolNeutral[20],
     background: palette.coolNeutral[15],
     surface: palette.coolNeutral[21],
     text: palette.coolNeutral[99],
