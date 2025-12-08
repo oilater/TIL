@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { LayoutHeader } from './components/LayoutHeader';
 
 export const metadata: Metadata = {
   title: 'TIL',
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <LayoutHeader />
+        {children}
+      </body>
     </html>
   );
 }
