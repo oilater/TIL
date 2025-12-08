@@ -1,57 +1,83 @@
 // app/api/auth/github/callback/route.ts
 
 import crypto from 'crypto';
-import { unstable_noStore } from 'next/cache';
 import { saveSession } from '@/app/server/session';
 
+const SESSION_TTL = 7 * 24 * 60 * 60 * 1000;
+
 export async function GET(request: Request) {
-  unstable_noStore();
-
   const { searchParams } = new URL(request.url);
+  
   const code = searchParams.get('code');
-  if (!code) return Response.json({ error: 'No code found' }, { status: 400 });
+  if (!code) {
+    return Response.json({ error: 'No code found' }, { status: 400 });
+  }
 
-  const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({
-      client_id: process.env.GITHUB_CLIENT_ID,
-      client_secret: process.env.GITHUB_CLIENT_SECRET,
-      code,
-    }),
-  });
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
-  const { access_token } = await tokenRes.json();
-  if (!access_token)
-    return Response.json({ error: 'No token' }, { status: 400 });
+  if (!clientId || !clientSecret) {
+    return Response.json({ error: 'Server configuration error' }, { status: 500 });
+  }
 
-  // user 정보 가져오기
-  const userRes = await fetch('https://api.github.com/user', {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      Accept: 'application/vnd.github+json',
-    },
-  });
-  const user = await userRes.json();
+  try {
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+      }),
+    });
 
-  // 세션 생성
-  const sessionId = crypto.randomUUID();
+    if (!tokenResponse.ok) {
+      return Response.json({ error: 'Failed to get access token' }, { status: 500 });
+    }
+    
+    const { access_token: accessToken } = await tokenResponse.json();
+    if (!accessToken) {
+      return Response.json({ error: 'No token received' }, { status: 400 });
+    }
 
-  saveSession({
-    sessionId,
-    accessToken: access_token,
-    userId: user.id,
-    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
-  });
+    const userResponse = await fetch('https://api.github.com/user', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/vnd.github+json',
+      },
+    });
 
-  const redirectUrl = new URL('/', request.url);
-  console.log('callback - Session ID', sessionId);
+    if (!userResponse.ok) {
+      return Response.json({ error: 'Failed to get user info' }, { status: 500 });
+    }
 
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: redirectUrl.toString(),
-      'Set-Cookie': `session=${sessionId}; HttpOnly; Path=/; Max-Age=604800`,
-    },
-  });
+    const user = await userResponse.json();
+
+    if (!user?.id) {
+      return Response.json({ error: 'Invalid user data' }, { status: 500 });
+    }
+
+    const sessionId = crypto.randomUUID();
+
+    await saveSession({
+      sessionId,
+      accessToken,
+      userId: user.id,
+      expiresAt: Date.now() + SESSION_TTL,
+    });
+
+    const redirectUrl = new URL('/', request.url);
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: redirectUrl.toString(),
+        'Cache-Control': 'no-store',
+        'Set-Cookie': `session=${sessionId}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${SESSION_TTL / 1000}`
+      },
+    });
+  } catch (error) {
+    console.error('OAuth callback error:', error);
+    return Response.json({ error: 'Authentication failed' }, { status: 500 });
+  }
 }

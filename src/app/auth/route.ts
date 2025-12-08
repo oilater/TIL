@@ -1,9 +1,23 @@
-export async function GET() {
-  const githubAuthURL =
-    `https://github.com/login/oauth/authorize` +
-    `?client_id=${process.env.GITHUB_CLIENT_ID}` +
-    `&redirect_uri=${process.env.GITHUB_REDIRECT_URI}` +
-    `&scope=read:user user:email`;
+import { NextResponse } from 'next/server';
 
-  return Response.redirect(githubAuthURL);
+export async function GET() {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const redirectUri = process.env.GITHUB_REDIRECT_URI;
+
+  if (!clientId || !redirectUri) {
+    return NextResponse.json(
+      { error: 'GitHub OAuth configuration is missing' },
+      { status: 500 }
+    );
+  }
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    scope: 'repo read:user user:email',
+  });
+
+  const githubAuthURL = `https://github.com/login/oauth/authorize?${params.toString()}`;
+  
+  return NextResponse.redirect(githubAuthURL);
 }
