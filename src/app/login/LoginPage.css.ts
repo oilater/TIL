@@ -20,5 +20,11 @@ export const content = style({
 export const title = style({
   fontSize: 74,
   fontWeight: 700,
-  color: color.light.text.muted,
+  color: color.light.text.disabled,
+  transition: 'color 0.3s ease',
+  selectors: {
+    [`${content}:hover &`]: {
+      color: color.accent.info,
+    },
+  },
 });

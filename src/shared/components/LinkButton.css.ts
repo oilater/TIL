@@ -1,6 +1,5 @@
 import { style } from '@vanilla-extract/css';
-
-import { color } from '../../../shared/tokens/color/Semantic.css';
+import { color } from '../tokens/color/Semantic.css';
 
 export const githubButton = style({
   position: 'relative',
