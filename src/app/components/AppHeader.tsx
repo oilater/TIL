@@ -1,10 +1,8 @@
 'use client';
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { ProfileImage } from '@/shared/components/ProfileImage';
 import {
-  avatar,
   header,
   leftSection,
   logoutButton,
@@ -22,13 +20,12 @@ type User = {
 };
 
 export function AppHeader() {
-  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
     try {
-      const res = await fetch('/api/user/me');
+      const res = await fetch('/api/user/me', { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
         setUser(data);
@@ -46,9 +43,10 @@ export function AppHeader() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      router.push('/login');
-      router.refresh();
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      if (res.ok) {
+        window.location.href = '/login';
+      }
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -60,7 +58,7 @@ export function AppHeader() {
         <div className={leftSection}>
           <h1 className={title}>TIL</h1>
         </div>
-        <div className={rightSection}>Loading...</div>
+        <div className={rightSection}> </div>
       </header>
     );
   }
@@ -73,16 +71,12 @@ export function AppHeader() {
       </div>
       <div className={rightSection}>
         {user && (
-          <div className={userInfo}>
-            <Image
-              src={user.avatar_url}
-              alt={user.login}
-              className={avatar}
-              width={32}
-              height={32}
-            />
-            <span className={username}>{user.name || user.login}</span>
-          </div>
+          <>
+            <div className={userInfo}>
+              <span className={username}>{user.name || user.login}</span>
+            </div>
+            <ProfileImage src={user.avatar_url} alt={user.login} size={32} />
+          </>
         )}
         <button onClick={handleLogout} className={logoutButton}>
           Logout
