@@ -20,7 +20,7 @@ export const color = createGlobalTheme(':root', {
   },
 
   accent: {
-    info: palette.lightBlue[50],
+    info: palette.blue[60],
     success: palette.mint[50],
     highlight: palette.pink[50],
   },

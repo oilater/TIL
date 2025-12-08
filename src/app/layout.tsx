@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { LayoutHeader } from './components/LayoutHeader';
+import { LayoutHeader } from '@/shared/components/Header/LayoutHeader';
 
 export const metadata: Metadata = {
   title: 'TIL',

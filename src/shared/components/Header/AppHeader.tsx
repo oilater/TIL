@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { ProfileImage } from '@/shared/components/ProfileImage';
+import { ProfileImage } from '@/shared/components/ProfileImage/ProfileImage';
 import {
   header,
   leftSection,
