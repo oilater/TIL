@@ -7,12 +7,18 @@ export async function GET() {
     const sessionId = cookieStore.get('session')?.value;
 
     if (!sessionId) {
-      return Response.json({ error: 'Not authenticated' }, { status: 401 });
+      return Response.json(
+        { error: 'Not authenticated' },
+        { status: 401 },
+      );
     }
 
     const session = await getSession(sessionId);
     if (!session) {
-      return Response.json({ error: 'Invalid session' }, { status: 401 });
+      return Response.json(
+        { error: 'Invalid session' },
+        { status: 401 },
+      );
     }
 
     const userResponse = await fetch('https://api.github.com/user', {
@@ -38,6 +44,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Get user error:', error);
-    return Response.json({ error: 'Failed to get user info' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to get user info' },
+      { status: 500 },
+    );
   }
 }

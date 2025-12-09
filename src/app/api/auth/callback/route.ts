@@ -50,7 +50,10 @@ export async function GET(request: Request) {
 
     const { access_token: accessToken } = await tokenResponse.json();
     if (!accessToken) {
-      return Response.json({ error: 'No token received' }, { status: 400 });
+      return Response.json(
+        { error: 'No token received' },
+        { status: 400 },
+      );
     }
 
     const userResponse = await fetch('https://api.github.com/user', {
@@ -70,7 +73,10 @@ export async function GET(request: Request) {
     const user = await userResponse.json();
 
     if (!user?.id) {
-      return Response.json({ error: 'Invalid user data' }, { status: 500 });
+      return Response.json(
+        { error: 'Invalid user data' },
+        { status: 500 },
+      );
     }
 
     const sessionId = crypto.randomUUID();
@@ -100,6 +106,9 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error('OAuth callback error:', error);
-    return Response.json({ error: 'Authentication failed' }, { status: 500 });
+    return Response.json(
+      { error: 'Authentication failed' },
+      { status: 500 },
+    );
   }
 }

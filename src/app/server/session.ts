@@ -17,14 +17,18 @@ export async function saveSession(session: Session) {
   try {
     const redis = getRedisClient();
     const key = `${PREFIX}${session.sessionId}`;
-    await redis.set(key, JSON.stringify(session), { ex: SESSION_TTL });
+    await redis.set(key, JSON.stringify(session), {
+      ex: SESSION_TTL,
+    });
   } catch (error) {
     console.error('Failed to save session:', error);
     throw error;
   }
 }
 
-export async function getSession(sessionId: string): Promise<Session | null> {
+export async function getSession(
+  sessionId: string,
+): Promise<Session | null> {
   try {
     const redis = getRedisClient();
     const key = `${PREFIX}${sessionId}`;

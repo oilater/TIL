@@ -7,18 +7,28 @@ export async function POST(request: Request) {
     const sessionId = cookieStore.get('session')?.value;
 
     if (!sessionId) {
-      return Response.json({ error: 'Not authenticated' }, { status: 401 });
+      return Response.json(
+        { error: 'Not authenticated' },
+        { status: 401 },
+      );
     }
 
     const session = await getSession(sessionId);
     if (!session) {
-      return Response.json({ error: 'Invalid session' }, { status: 401 });
+      return Response.json(
+        { error: 'Invalid session' },
+        { status: 401 },
+      );
     }
 
     const body = await request.json();
     const { repoName } = body;
 
-    if (!repoName || typeof repoName !== 'string' || repoName.trim() === '') {
+    if (
+      !repoName ||
+      typeof repoName !== 'string' ||
+      repoName.trim() === ''
+    ) {
       return Response.json(
         { error: 'Repository name is required' },
         { status: 400 },

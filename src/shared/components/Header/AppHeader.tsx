@@ -25,7 +25,9 @@ export function AppHeader() {
 
   const fetchUser = useCallback(async () => {
     try {
-      const res = await fetch('/api/user/me', { credentials: 'include' });
+      const res = await fetch('/api/user/me', {
+        credentials: 'include',
+      });
       if (res.ok) {
         const data = await res.json();
         setUser(data);
@@ -73,9 +75,15 @@ export function AppHeader() {
         {user && (
           <>
             <div className={userInfo}>
-              <span className={username}>{user.name || user.login}</span>
+              <span className={username}>
+                {user.name || user.login}
+              </span>
             </div>
-            <ProfileImage src={user.avatar_url} alt={user.login} size={32} />
+            <ProfileImage
+              src={user.avatar_url}
+              alt={user.login}
+              size={32}
+            />
           </>
         )}
         <button onClick={handleLogout} className={logoutButton}>
