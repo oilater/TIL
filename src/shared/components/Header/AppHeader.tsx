@@ -21,7 +21,6 @@ type User = {
 
 export function AppHeader() {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
     try {
@@ -34,8 +33,6 @@ export function AppHeader() {
       }
     } catch (error) {
       console.error('Failed to fetch user:', error);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -54,22 +51,10 @@ export function AppHeader() {
     }
   };
 
-  if (loading) {
-    return (
-      <header className={header}>
-        <div className={leftSection}>
-          <h1 className={title}>TIL</h1>
-        </div>
-        <div className={rightSection}> </div>
-      </header>
-    );
-  }
-
   return (
     <header className={header}>
       <div className={leftSection}>
-        <h1 className={title}>TIL</h1>
-        <span className={repoInfo}>Repository: Not set</span>
+        <p className={title}>TIL</p>
       </div>
       <div className={rightSection}>
         {user && (

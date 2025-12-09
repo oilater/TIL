@@ -3,10 +3,11 @@ import { color } from '@/shared/tokens/color/Semantic.css';
 
 export const header = style({
   display: 'flex',
+  position: 'fixed',
+  width: '100%',
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: '0.5rem 2rem',
-  //   borderBottom: `1px solid ${color.light.border.default}`,
   backgroundColor: color.common.white,
 });
 

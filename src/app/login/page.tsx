@@ -1,6 +1,6 @@
 import { LinkButton } from '@/shared/components/LinkButton';
 import { GitHubIcon } from '@/shared/icons/GitHubIcon';
-import { content, page, title } from './LoginPage.css';
+import { content, page, title } from './style.css';
 
 export default function LoginPage() {
   return (

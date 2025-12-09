@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { LayoutHeader } from '@/shared/components/Header/LayoutHeader';
+import { QueryProvider } from './(provider)/QueryProvider';
 
 export const metadata: Metadata = {
   title: 'TIL',
@@ -30,7 +31,7 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <LayoutHeader />
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

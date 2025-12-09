@@ -23,7 +23,7 @@ export const title = style({
   transition: 'color 0.2s ease-in-out',
   selectors: {
     [`${content}:hover &`]: {
-      color: color.accent.info,
+      color: color.accent.merged,
     },
   },
 });

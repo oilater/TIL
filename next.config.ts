@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  turbopack: {},
 };
 
 export default withVanillaExtract(nextConfig);

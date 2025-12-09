@@ -1,4 +1,4 @@
-import { Infer, number, object, string, type } from 'superstruct';
+import { Infer, number, object, optional, string } from 'superstruct';
 import { getRedisClient } from './redis';
 
 const SessionStruct = object({
@@ -6,6 +6,7 @@ const SessionStruct = object({
   accessToken: string(),
   userId: number(),
   expiresAt: number(),
+  repoName: optional(string()),
 });
 
 type Session = Infer<typeof SessionStruct>;

@@ -18,13 +18,14 @@ export const color = createGlobalTheme(':root', {
     strong: palette.coolNeutral[10],
     text: palette.common[100],
   },
-
   accent: {
-    info: palette.violet[50],
-    success: palette.mint[50],
-    highlight: palette.pink[50],
+    merged: palette.violet[50],
+    pr: palette.green[50],
   },
-
+  hover: {
+    merged: palette.violet[30],
+    pr: palette.green[30],
+  },
   light: {
     background: {
       base: palette.coolNeutral[100],
