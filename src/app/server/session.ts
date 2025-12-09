@@ -1,11 +1,14 @@
+import { Infer, number, object, string, type } from 'superstruct';
 import { getRedisClient } from './redis';
 
-type Session = {
-  sessionId: string;
-  accessToken: string;
-  userId: string;
-  expiresAt: number;
-};
+const SessionStruct = object({
+  sessionId: string(),
+  accessToken: string(),
+  userId: number(),
+  expiresAt: number(),
+});
+
+type Session = Infer<typeof SessionStruct>;
 
 const PREFIX = 'session:';
 const SESSION_TTL = 7 * 24 * 60 * 60;
@@ -28,8 +31,7 @@ export async function getSession(sessionId: string): Promise<Session | null> {
     const data = await redis.get<string>(key);
 
     if (!data) return null;
-
-    const session = JSON.parse(data) as Session;
+    const session = SessionStruct.create(data);
 
     if (session.expiresAt < Date.now()) {
       await redis.del(key);
