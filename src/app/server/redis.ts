@@ -3,19 +3,17 @@ import { Redis } from '@upstash/redis';
 let redis: Redis | null = null;
 
 export function getRedisClient(): Redis {
-  if (!redis) {
-    const url = process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (redis) return redis;
 
-    if (!url || !token) {
-      throw new Error('UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be set');
-    }
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-    redis = new Redis({
-      url,
-      token,
-    });
+  if (!url || !token) {
+    throw new Error(
+      'UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be set',
+    );
   }
 
+  redis = new Redis({ url, token });
   return redis;
 }
