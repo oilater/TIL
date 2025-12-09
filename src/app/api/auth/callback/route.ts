@@ -1,5 +1,6 @@
 import { serialize } from 'cookie';
 import crypto from 'crypto';
+import { NextResponse } from 'next/server';
 import { saveSession } from '@/app/server/session';
 
 const __PROD__ = process.env.NODE_ENV === 'production';
@@ -91,10 +92,8 @@ export async function GET(request: Request) {
       maxAge: SESSION_TTL / 1000,
     });
 
-    return new Response(null, {
-      status: 302,
+    return NextResponse.redirect(redirectUrl, {
       headers: {
-        Location: redirectUrl.toString(),
         'Cache-Control': 'no-store',
         'Set-Cookie': cookie,
       },
