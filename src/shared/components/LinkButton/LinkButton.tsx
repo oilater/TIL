@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
 import { githubButton, iconWrapper, textStack } from './LinkButton.css';
 
-type LinkButtonProps = {
+interface LinkButtonProps extends LinkProps {
   icon?: React.ReactNode;
   href: string;
   children: React.ReactNode;
-};
+}
 
 export function LinkButton({ icon, href, children }: LinkButtonProps) {
   return (
