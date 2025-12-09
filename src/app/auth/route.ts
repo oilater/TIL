@@ -1,4 +1,9 @@
 import { NextResponse } from 'next/server';
+import { __PROD__ } from '@/constant';
+
+const origin = __PROD__
+  ? (process.env.ORIGIN_SERVER_URL ?? 'https://localhost:3000')
+  : 'https://localhost:3000';
 
 export async function GET() {
   const clientId = process.env.GITHUB_CLIENT_ID;
@@ -19,5 +24,8 @@ export async function GET() {
 
   const githubAuthURL = `https://github.com/login/oauth/authorize?${params.toString()}`;
 
-  return NextResponse.redirect(githubAuthURL);
+  const response = NextResponse.redirect(githubAuthURL);
+  response.headers.set('Access-Control-Allow-Origin', origin);
+  response.headers.set('Access-Control-Allow-Methods', 'GET');
+  return response;
 }

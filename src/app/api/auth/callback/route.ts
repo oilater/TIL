@@ -2,8 +2,8 @@ import { serialize } from 'cookie';
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 import { saveSession } from '@/app/server/session';
+import { __PROD__ } from '@/constant';
 
-const __PROD__ = process.env.NODE_ENV === 'production';
 const SESSION_TTL = 7 * 24 * 60 * 60 * 1000;
 
 export async function GET(request: Request) {
