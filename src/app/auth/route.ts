@@ -7,7 +7,7 @@ export async function GET() {
   if (!clientId || !redirectUri) {
     return NextResponse.json(
       { error: 'GitHub OAuth configuration is missing' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -18,6 +18,6 @@ export async function GET() {
   });
 
   const githubAuthURL = `https://github.com/login/oauth/authorize?${params.toString()}`;
-  
+
   return NextResponse.redirect(githubAuthURL);
 }

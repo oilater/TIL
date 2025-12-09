@@ -19,33 +19,42 @@ export async function POST(request: Request) {
     const { repoName } = body;
 
     if (!repoName || typeof repoName !== 'string' || repoName.trim() === '') {
-      return Response.json({ error: 'Repository name is required' }, { status: 400 });
+      return Response.json(
+        { error: 'Repository name is required' },
+        { status: 400 },
+      );
     }
 
-    const createRepoResponse = await fetch('https://api.github.com/user/repos', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`,
-        Accept: 'application/vnd.github+json',
+    const createRepoResponse = await fetch(
+      'https://api.github.com/user/repos',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+          Accept: 'application/vnd.github+json',
+        },
+        body: JSON.stringify({
+          name: repoName.trim(),
+          private: true,
+        }),
       },
-      body: JSON.stringify({
-        name: repoName.trim(),
-        private: true,
-      }),
-    });
+    );
 
     const data = await createRepoResponse.json();
 
     if (!createRepoResponse.ok) {
       return Response.json(
         { error: data.message || 'Failed to create repository' },
-        { status: createRepoResponse.status }
+        { status: createRepoResponse.status },
       );
     }
 
     return Response.json(data, { status: 201 });
   } catch (error) {
     console.error('Repository creation error:', error);
-    return Response.json({ error: 'Failed to create repository' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to create repository' },
+      { status: 500 },
+    );
   }
 }

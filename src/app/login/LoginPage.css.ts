@@ -1,6 +1,5 @@
 import { style } from '@vanilla-extract/css';
-
-import { color } from '../../shared/tokens/color/Semantic.css';
+import { color } from '@/shared/tokens/color/Semantic.css';
 
 export const page = style({
   minHeight: '100vh',
@@ -18,10 +17,10 @@ export const content = style({
 });
 
 export const title = style({
-  fontSize: 74,
+  fontSize: 84,
   fontWeight: 700,
   color: color.light.text.disabled,
-  transition: 'color 0.3s ease',
+  transition: 'color 0.2s ease-in-out',
   selectors: {
     [`${content}:hover &`]: {
       color: color.accent.info,
