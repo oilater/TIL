@@ -31,7 +31,7 @@ export async function getSession(sessionId: string): Promise<Session | null> {
     const data = await redis.get<string>(key);
 
     if (!data) return null;
-    const session = SessionStruct.create(data);
+    const session = SessionStruct.create(JSON.parse(data));
 
     if (session.expiresAt < Date.now()) {
       await redis.del(key);
