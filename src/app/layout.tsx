@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { LayoutHeader } from '@/shared/components/Header/LayoutHeader';
+import { SectionContainer } from '@/shared/components/SectionContainer/SectionContainer';
 import { QueryProvider } from './(provider)/QueryProvider';
 
 export const metadata: Metadata = {
@@ -31,7 +32,9 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <LayoutHeader />
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <SectionContainer>{children}</SectionContainer>
+        </QueryProvider>
       </body>
     </html>
   );
