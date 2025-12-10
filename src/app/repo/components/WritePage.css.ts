@@ -24,6 +24,13 @@ export const title = style({
   color: color.light.text.primary,
 });
 
+export const description = style({
+  fontSize: '0.875rem',
+  color: color.light.text.muted,
+  marginBottom: '1rem',
+  lineHeight: '1.5',
+});
+
 export const input = style({
   width: '100%',
   padding: '0.875rem 1rem',

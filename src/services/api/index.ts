@@ -26,4 +26,21 @@ export const api = {
     });
     return res.json();
   },
+
+  writeDiary: async (title: string, content: string) => {
+    const res = await fetch('/api/repo/write', {
+      method: 'POST',
+      body: JSON.stringify({ title, content }),
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to write diary');
+    }
+
+    return data;
+  },
 };
