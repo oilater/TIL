@@ -29,17 +29,42 @@ export async function POST(request: Request) {
       );
     }
 
-    const listRes = await fetch('https://api.github.com/user/repos', {
-      headers: { Authorization: `Bearer ${session.accessToken}` },
-    });
-    const repos: Array<{ name: string }> = await listRes.json();
+    const trimmedRepoName = repoName.trim();
 
-    const existingRepo = repos.find(
-      (r) => r.name === repoName.trim(),
+    const userRes = await fetch('https://api.github.com/user', {
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`,
+        Accept: 'application/vnd.github+json',
+      },
+    });
+
+    if (!userRes.ok) {
+      return new Response(
+        JSON.stringify({ error: 'Failed to get user info' }),
+        { status: 500 },
+      );
+    }
+
+    const user = await userRes.json();
+    const username = user.login;
+
+    const checkRepoRes = await fetch(
+      `https://api.github.com/repos/${username}/${trimmedRepoName}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+          Accept: 'application/vnd.github+json',
+        },
+      },
     );
 
-    if (existingRepo) {
-      session.repoName = repoName.trim();
+    if (checkRepoRes.ok || checkRepoRes.status === 403) {
+      const existingRepo = await checkRepoRes.json().catch(() => ({
+        name: trimmedRepoName,
+        html_url: `https://github.com/${username}/${trimmedRepoName}`,
+      }));
+
+      session.repoName = trimmedRepoName;
       await saveSession(session);
       return new Response(
         JSON.stringify({ action: 'connect', repo: existingRepo }),

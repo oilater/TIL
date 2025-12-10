@@ -14,6 +14,7 @@ import {
   result,
   title,
 } from './ConnectPage.css';
+import WritePage from './WritePage';
 
 interface Repo {
   name: string;
@@ -33,13 +34,17 @@ export default function ConnectRepoPage() {
     isPending,
   } = useConnectRepo();
 
-  // Real-time check - 계산만 하면 됨
+  if (reposData?.repoName && !isReposLoading) {
+    return <WritePage />;
+  }
+
   const trimmedName = repoName.trim();
   const targetRepo = reposData?.repos?.find(
-    (r: Repo) => r.name.toLowerCase() === trimmedName.toLowerCase(),
+    (repo: Repo) =>
+      repo.name.toLowerCase() === trimmedName.toLowerCase(),
   );
 
-  const buttonText = targetRepo ? 'Connect' : 'Create';
+  const actionText = targetRepo ? 'Connect' : 'Create';
   const existingRepoUrl = targetRepo?.html_url || null;
 
   const onClick = () => {
@@ -49,11 +54,11 @@ export default function ConnectRepoPage() {
   return (
     <main className={page}>
       <div className={container}>
-        <h1 className={title}>Create Repository</h1>
+        <h1 className={title}>{actionText} Repository</h1>
         <p className={description}>
           기록을 저장할 레포지토리를 생성해요.
           <br />
-          기존 레포지토리에도 연결할 수 있어요.
+          기존 레포지토리도 연결할 수 있어요.
         </p>
 
         <input
@@ -76,21 +81,14 @@ export default function ConnectRepoPage() {
           onClick={onClick}
           disabled={!repoName || isPending || isReposLoading}
         >
-          {isPending ? 'Processing...' : buttonText}
+          {isPending ? '' : actionText}
         </button>
 
         {isError && (
           <p className={error}>{(fetchError as Error).message}</p>
         )}
 
-        {data && (
-          <div className={result}>
-            <p>
-              Action: {data.action}, Repo Name: {data.repo.name}
-            </p>
-            <p>URL: {data.repo.html_url}</p>
-          </div>
-        )}
+        {data && <div className={result}>연결 완료</div>}
       </div>
     </main>
   );

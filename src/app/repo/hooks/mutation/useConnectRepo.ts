@@ -13,8 +13,7 @@ type RepoResponse = {
 export const useConnectRepo = () => {
   return useMutation<RepoResponse, Error, string>({
     mutationFn: (repoName: string) => api.connectRepo(repoName),
-    onSuccess: (data) => {
-      console.log('Repo action:', data.action, data.repo);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['repos'] });
     },
     onError: (error: Error) => {

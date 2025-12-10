@@ -6,7 +6,17 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
     });
-    return res.json();
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        data.error ||
+          `Failed to ${res.status === 422 ? 'create or connect' : 'process'} repository`,
+      );
+    }
+
+    return data;
   },
 
   getRepos: async () => {
