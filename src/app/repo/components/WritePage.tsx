@@ -10,6 +10,7 @@ import {
   page,
   textarea,
   title,
+  titleSection,
 } from './WritePage.css';
 
 export default function WritePage() {
@@ -41,12 +42,14 @@ export default function WritePage() {
   return (
     <main className={page}>
       <div className={container}>
-        <h1 className={title}>✨ Write Diary</h1>
-        <p className={description}>
-          일기를 저장하면 2025-12-05와 같은 오늘 날짜 폴더 안에
-          제목.md로 파일이 생성돼요. <br />
-          내용에는 마크다운을 사용할 수 있어요.
-        </p>
+        <div className={titleSection}>
+          <h1 className={title}>✨ Write Diary</h1>
+          <p className={description}>
+            일기를 저장하면 2025-12-05와 같이 오늘 날짜 폴더 안에
+            제목.md 파일이 생성돼요. <br />
+            내용에는 마크다운을 사용할 수 있어요.
+          </p>
+        </div>
 
         <input
           className={input}
@@ -59,24 +62,16 @@ export default function WritePage() {
 
         <textarea
           className={textarea}
-          placeholder="내용을 입력하세요"
+          placeholder="오늘은 무슨 일이 있었나요?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={12}
           disabled={isPending}
         />
 
-        {isError && (
-          <p style={{ color: 'red', marginTop: '1rem' }}>
-            {(error as Error).message}
-          </p>
-        )}
+        {isError && <p>{(error as Error).message}</p>}
 
-        {isSuccess && (
-          <p style={{ color: 'green', marginTop: '1rem' }}>
-            저장 완료! ✨
-          </p>
-        )}
+        {isSuccess && <p>저장 완료! ✨</p>}
 
         <button
           className={button}

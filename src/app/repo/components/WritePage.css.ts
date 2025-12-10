@@ -17,10 +17,16 @@ export const container = style({
   gap: '1.5rem',
 });
 
+export const titleSection = style({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+});
+
 export const title = style({
-  fontSize: '1.4rem',
+  fontSize: '1.6rem',
   fontWeight: 500,
-  marginBottom: '0.5rem',
+  marginBottom: '1rem',
   color: color.light.text.primary,
 });
 
@@ -47,7 +53,7 @@ export const input = style({
       opacity: 1,
     },
     '&:focus': {
-      borderColor: color.accent.pr,
+      borderColor: color.accent.merged,
     },
   },
 });
@@ -72,7 +78,7 @@ export const textarea = style({
       opacity: 1,
     },
     '&:focus': {
-      borderColor: color.accent.pr,
+      borderColor: color.accent.merged,
     },
   },
 });
@@ -81,7 +87,7 @@ export const button = style({
   padding: '0.75rem 1.5rem',
   borderRadius: 8,
   border: 'none',
-  backgroundColor: color.accent.pr,
+  backgroundColor: color.accent.merged,
   color: color.common.white,
   fontSize: '0.95rem',
   fontWeight: 500,
@@ -89,10 +95,20 @@ export const button = style({
   transition: 'background-color 0.2s',
   alignSelf: 'flex-end',
   ':hover': {
-    backgroundColor: color.hover.pr,
+    backgroundColor: color.hover.merged,
   },
   ':disabled': {
     backgroundColor: color.light.border.strong,
     cursor: 'not-allowed',
   },
+});
+
+export const successText = style({
+  color: color.accent.pr,
+  marginTop: '1rem',
+});
+
+export const errorText = style({
+  color: 'red',
+  marginTop: '1rem',
 });
