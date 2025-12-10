@@ -14,7 +14,6 @@ import {
   result,
   title,
 } from './ConnectPage.css';
-import WritePage from './WritePage';
 
 interface Repo {
   name: string;
@@ -33,10 +32,6 @@ export default function ConnectRepoPage() {
     error: fetchError,
     isPending,
   } = useConnectRepo();
-
-  if (reposData?.repoName && !isReposLoading) {
-    return <WritePage />;
-  }
 
   const trimmedName = repoName.trim();
   const targetRepo = reposData?.repos?.find(
