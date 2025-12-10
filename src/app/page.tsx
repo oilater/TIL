@@ -1,21 +1,19 @@
-'use client';
-
+import { cookies } from 'next/headers';
 import './globals.css';
 import ConnectRepoPage from './repo/components/ConnectPage';
 import WritePage from './repo/components/WritePage';
-import { useRepos } from './repo/hooks/query/useRepos';
+import { getSession } from './server/session';
 
-export default function Home() {
-  const { data: repo, isLoading } = useRepos();
-  const hasRepoConnected = repo?.repoName !== null;
+export default async function Home() {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get('session')?.value;
 
-  if (isLoading) {
-    return (
-      <main>
-        <div>Loading...</div>
-      </main>
-    );
+  if (!sessionId) {
+    return <ConnectRepoPage />;
   }
+
+  const session = await getSession(sessionId);
+  const hasRepoConnected = session?.repoName != null;
 
   return hasRepoConnected ? <WritePage /> : <ConnectRepoPage />;
 }
