@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { queryClient } from '@/app/(provider)/QueryProvider';
 import { api } from '@/services/api';
 
 type RepoResponse = {
@@ -14,6 +15,7 @@ export const useConnectRepo = () => {
     mutationFn: (repoName: string) => api.connectRepo(repoName),
     onSuccess: (data) => {
       console.log('Repo action:', data.action, data.repo);
+      queryClient.invalidateQueries({ queryKey: ['repos'] });
     },
     onError: (error: Error) => {
       console.error('Repo action failed:', error);
