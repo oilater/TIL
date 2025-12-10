@@ -1,16 +1,8 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { getSession } from '@/app/server/session';
+import { getSession } from '@/server/session';
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const sessionId = cookieStore.get('session')?.value;
-
-  if (!sessionId) {
-    return NextResponse.json({ repoName: null, repos: [] });
-  }
-
-  const session = await getSession(sessionId);
+  const session = await getSession();
   if (!session) {
     return NextResponse.json({ repoName: null, repos: [] });
   }

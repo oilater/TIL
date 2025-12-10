@@ -1,30 +1,21 @@
-import { cookies } from 'next/headers';
-import { getSession, saveSession } from '@/app/server/session';
+import { NextResponse } from 'next/server';
+import { createSession, getSession } from '@/server/session';
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const sessionId = cookieStore.get('session')?.value;
+    const session = await getSession();
 
-    if (!sessionId) {
-      return new Response(
-        JSON.stringify({ error: 'Not authenticated' }),
-        { status: 401 },
-      );
-    }
-
-    const session = await getSession(sessionId);
     if (!session) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid session' }),
-        { status: 401 },
+      return NextResponse.json(
+        { error: 'No Session' },
+        { status: 401 }, // 인증 문제이므로 401
       );
     }
 
     const { repoName } = await request.json();
     if (!repoName || typeof repoName !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Repository name is required' }),
+      return NextResponse.json(
+        { error: 'Repository name is required' },
         { status: 400 },
       );
     }
@@ -39,8 +30,8 @@ export async function POST(request: Request) {
     });
 
     if (!userRes.ok) {
-      return new Response(
-        JSON.stringify({ error: 'Failed to get user info' }),
+      return NextResponse.json(
+        { error: 'Failed to get user info' },
         { status: 500 },
       );
     }
@@ -65,9 +56,10 @@ export async function POST(request: Request) {
       }));
 
       session.repoName = trimmedRepoName;
-      await saveSession(session);
-      return new Response(
-        JSON.stringify({ action: 'connect', repo: existingRepo }),
+      await createSession(session);
+
+      return NextResponse.json(
+        { action: 'connect', repo: existingRepo },
         { status: 200 },
       );
     }
@@ -86,27 +78,26 @@ export async function POST(request: Request) {
         }),
       },
     );
+
     const data = await createRes.json();
     if (!createRes.ok) {
-      return new Response(
-        JSON.stringify({
-          error: data.message || 'Failed to create repository',
-        }),
+      return NextResponse.json(
+        { error: data.message || 'Failed to create repository' },
         { status: createRes.status },
       );
     }
 
     session.repoName = repoName.trim();
-    await saveSession(session);
+    await createSession(session);
 
-    return new Response(
-      JSON.stringify({ action: 'create', repo: data }),
+    return NextResponse.json(
+      { action: 'create', repo: data },
       { status: 201 },
     );
   } catch (error) {
     console.error(error);
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+    return NextResponse.json(
+      { error: 'Internal server error' },
       { status: 500 },
     );
   }

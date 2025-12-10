@@ -43,7 +43,7 @@ export default function WritePage() {
     <main className={page}>
       <div className={container}>
         <div className={titleSection}>
-          <h1 className={title}>✨ Write Diary</h1>
+          <h1 className={title}>✨ Write a Diary</h1>
           <p className={description}>
             일기를 저장하면 2025-12-05와 같이 오늘 날짜 폴더 안에
             제목.md 파일이 생성돼요. <br />

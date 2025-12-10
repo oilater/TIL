@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { getSession } from '@/app/server/session';
+import { getSession } from '@/server/session';
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const GITHUB_HEADERS = {
@@ -77,7 +77,7 @@ const createGitHubFile = async (
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: '✨Write Diary',
+        message: '✨Write a diary',
         content: encodeContent(content),
       }),
     },
@@ -96,20 +96,13 @@ const createGitHubFile = async (
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const sessionId = cookieStore.get('session')?.value;
+    const session = await getSession();
 
-    if (!sessionId) {
-      return errorResponse('Not authenticated', 401);
-    }
-
-    const session = await getSession(sessionId);
-    if (!session) {
-      return errorResponse('Invalid session', 401);
-    }
-
-    if (!session.repoName) {
-      return errorResponse('No repository connected', 400);
+    if (!session || !session.repoName) {
+      return errorResponse(
+        'No Session or No repository connected',
+        400,
+      );
     }
 
     const body = (await request.json()) as WriteRequest;

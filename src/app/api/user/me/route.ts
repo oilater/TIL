@@ -1,21 +1,11 @@
-import { cookies } from 'next/headers';
-import { getSession } from '@/app/server/session';
+import { NextResponse } from 'next/server';
+import { getSession } from '@/server/session';
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const sessionId = cookieStore.get('session')?.value;
-
-    if (!sessionId) {
-      return Response.json(
-        { error: 'Not authenticated' },
-        { status: 401 },
-      );
-    }
-
-    const session = await getSession(sessionId);
+    const session = await getSession();
     if (!session) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'Invalid session' },
         { status: 401 },
       );
@@ -29,7 +19,7 @@ export async function GET() {
     });
 
     if (!userResponse.ok) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'Failed to get user info' },
         { status: 500 },
       );
@@ -37,14 +27,14 @@ export async function GET() {
 
     const user = await userResponse.json();
 
-    return Response.json({
+    return NextResponse.json({
       login: user.login,
       name: user.name,
       avatar_url: user.avatar_url,
     });
   } catch (error) {
     console.error('Get user error:', error);
-    return Response.json(
+    return NextResponse.json(
       { error: 'Failed to get user info' },
       { status: 500 },
     );

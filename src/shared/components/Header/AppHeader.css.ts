@@ -2,13 +2,20 @@ import { style } from '@vanilla-extract/css';
 import { color } from '@/shared/tokens/color/Semantic.css';
 
 export const header = style({
-  display: 'flex',
   position: 'fixed',
   width: '100%',
-  justifyContent: 'space-between',
+  display: 'flex',
+  justifyContent: 'center',
   alignItems: 'center',
   padding: '0.5rem 2rem',
   backgroundColor: color.common.white,
+});
+
+export const wrapper = style({
+  width: 600,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
 });
 
 export const leftSection = style({

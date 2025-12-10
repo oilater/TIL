@@ -19,6 +19,12 @@ export const container = style({
   borderRadius: '8px',
 });
 
+export const titleSection = style({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+});
+
 export const title = style({
   fontSize: '1.4rem',
   fontWeight: 500,

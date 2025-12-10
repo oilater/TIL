@@ -82,8 +82,6 @@ export default function ConnectRepoPage() {
         {isError && (
           <p className={error}>{(fetchError as Error).message}</p>
         )}
-
-        {data && <div className={result}>연결 완료</div>}
       </div>
     </main>
   );

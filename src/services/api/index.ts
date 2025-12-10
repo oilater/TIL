@@ -1,4 +1,16 @@
 export const api = {
+  logout: async () => {
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+      if (res.ok) {
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  },
   connectRepo: async (repoName: string) => {
     const res = await fetch('/api/repo/create-or-connect', {
       method: 'POST',

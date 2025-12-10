@@ -1,8 +1,8 @@
 import { serialize } from 'cookie';
-import crypto from 'crypto';
+import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
-import { saveSession } from '@/app/server/session';
 import { __PROD__ } from '@/constant';
+import { createSession, getSession } from '@/server/session';
 
 const SESSION_TTL = 7 * 24 * 60 * 60 * 1000;
 
@@ -11,14 +11,17 @@ export async function GET(request: Request) {
 
   const code = searchParams.get('code');
   if (!code) {
-    return Response.json({ error: 'No code found' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'No code found' },
+      { status: 400 },
+    );
   }
 
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    return Response.json(
+    return NextResponse.json(
       { error: 'Server configuration error' },
       { status: 500 },
     );
@@ -42,7 +45,7 @@ export async function GET(request: Request) {
     );
 
     if (!tokenResponse.ok) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'Failed to get access token' },
         { status: 500 },
       );
@@ -50,7 +53,7 @@ export async function GET(request: Request) {
 
     const { access_token: accessToken } = await tokenResponse.json();
     if (!accessToken) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'No token received' },
         { status: 400 },
       );
@@ -64,29 +67,36 @@ export async function GET(request: Request) {
     });
 
     if (!userResponse.ok) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'Failed to get user info' },
         { status: 500 },
       );
     }
 
     const user = await userResponse.json();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'No User Exists' },
+        { status: 404 },
+      );
+    }
 
     if (!user?.id) {
-      return Response.json(
+      return NextResponse.json(
         { error: 'Invalid user data' },
         { status: 500 },
       );
     }
 
-    const sessionId = crypto.randomUUID();
+    const sessionId = nanoid();
+    let session = await getSession();
 
-    await saveSession({
-      sessionId,
-      accessToken,
-      userId: user.id,
-      expiresAt: Date.now() + SESSION_TTL,
-    });
+    if (!session) {
+      session = await createSession({
+        accessToken,
+        userId: user.id,
+      });
+    }
 
     const redirectUrl = new URL('/', request.url);
 
@@ -106,7 +116,7 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error('OAuth callback error:', error);
-    return Response.json(
+    return NextResponse.json(
       { error: 'Authentication failed' },
       { status: 500 },
     );

@@ -1,16 +1,17 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { api } from '@/services/api';
 import { ProfileImage } from '@/shared/components/ProfileImage/ProfileImage';
 import {
   header,
   leftSection,
   logoutButton,
-  repoInfo,
   rightSection,
   title,
   userInfo,
   username,
+  wrapper,
 } from './AppHeader.css';
 
 type User = {
@@ -40,40 +41,34 @@ export function AppHeader() {
     fetchUser();
   }, [fetchUser]);
 
-  const handleLogout = async () => {
-    try {
-      const res = await fetch('/api/auth/logout', { method: 'POST' });
-      if (res.ok) {
-        window.location.href = '/login';
-      }
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
   return (
     <header className={header}>
-      <div className={leftSection}>
-        <p className={title}>TIL</p>
-      </div>
-      <div className={rightSection}>
-        {user && (
-          <>
-            <div className={userInfo}>
-              <span className={username}>
-                {user.name || user.login}
-              </span>
-            </div>
-            <ProfileImage
-              src={user.avatar_url}
-              alt={user.login}
-              size={32}
-            />
-          </>
-        )}
-        <button onClick={handleLogout} className={logoutButton}>
-          Logout
-        </button>
+      <div className={wrapper}>
+        <div className={leftSection}>
+          <p className={title}>TIL</p>
+        </div>
+        <div className={rightSection}>
+          {user && (
+            <>
+              <div className={userInfo}>
+                <span className={username}>
+                  {user.name || user.login}
+                </span>
+              </div>
+              <ProfileImage
+                src={user.avatar_url}
+                alt={user.login}
+                size={32}
+              />
+            </>
+          )}
+          <button
+            onClick={() => api.logout()}
+            className={logoutButton}
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </header>
   );
